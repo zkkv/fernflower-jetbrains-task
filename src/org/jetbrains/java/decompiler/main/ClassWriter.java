@@ -287,7 +287,7 @@ public class ClassWriter {
 
       // Handle canonical constructor and default accessor methods.
       if (DecompilerContext.getOption(IFernflowerPreferences.COMPACT_RECORDS_OUTPUT)) {
-        Set<String> fieldNames = Set.copyOf(cl.getFields().stream().map(StructField::getName).toList());
+        List<String> fieldNames = cl.getFields().stream().map(StructField::getName).toList();
 
         if (name.equals("<init>")) {
           String str = code.toString().replaceAll("\\s+","");

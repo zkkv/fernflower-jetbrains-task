@@ -274,11 +274,6 @@ public class SingleClassesTest {
 
     decompiler.decompileContext();
 
-    /*System.err.println(fixture.getTargetDir().toString());
-    System.err.println(classFile.getFileName().toString().replace(".class", ".java"));
-    System.err.println(fixture.getTestDataDir().toString());
-    System.err.println("results/" + classFile.getFileName().toString().replace(".class", ".dec"));*/
-
     var decompiledFile = fixture.getTargetDir().resolve(classFile.getFileName().toString().replace(".class", ".java"));
     assertThat(decompiledFile).isRegularFile();
     assertTrue(Files.isRegularFile(decompiledFile));
