@@ -1,0 +1,19 @@
+public record TestRecordPartial(int x, int y) {
+   public TestRecordPartial(int var1) {
+      this(var1 + 5, 0);// 3
+   }// 4
+}
+
+class 'TestRecordPartial' {
+   method '<init> (I)V' {
+      2      2
+      3      2
+      4      2
+      5      2
+      8      3
+   }
+}
+
+Lines mapping:
+3 <-> 3
+4 <-> 4
