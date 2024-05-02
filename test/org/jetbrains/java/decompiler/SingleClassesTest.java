@@ -279,16 +279,7 @@ public class SingleClassesTest {
     assertTrue(Files.isRegularFile(decompiledFile));
     var referenceFile = fixture.getTestDataDir().resolve("results/" + classFile.getFileName().toString().replace(".class", ".dec"));
     assertThat(referenceFile).isRegularFile();
-    //assertFilesEqual(referenceFile, decompiledFile);
-    String refStr = null;
-    String decStr = null;
-    try {
-      refStr = Files.readString(referenceFile, StandardCharsets.UTF_8);
-      decStr = Files.readString(decompiledFile, StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    assertEquals(refStr, decStr);
+    assertFilesEqual(referenceFile, decompiledFile);
   }
 
   static List<Path> collectClasses(Path classFile) {
