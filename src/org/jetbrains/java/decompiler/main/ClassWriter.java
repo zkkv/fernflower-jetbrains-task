@@ -289,7 +289,7 @@ public class ClassWriter {
       if (DecompilerContext.getOption(IFernflowerPreferences.COMPACT_RECORDS_OUTPUT)) {
         List<String> fieldNames = cl.getFields().stream().map(StructField::getName).toList();
 
-        if (name.equals("<init>") && code.countLines() == fieldNames.size()) {
+        if (name.equals("<init>")) {
           String str = code.toString().replaceAll("\\s+","");
           StringBuilder sb = new StringBuilder();
           for (String field : fieldNames) {
