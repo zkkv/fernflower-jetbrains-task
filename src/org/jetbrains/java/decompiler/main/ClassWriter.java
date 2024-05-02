@@ -224,12 +224,9 @@ public class ClassWriter {
       for (StructMethod mt : cl.getMethods()) {
         boolean hide = mt.isSynthetic() && DecompilerContext.getOption(IFernflowerPreferences.REMOVE_SYNTHETIC) ||
                        mt.hasModifier(CodeConstants.ACC_BRIDGE) && DecompilerContext.getOption(IFernflowerPreferences.REMOVE_BRIDGE) ||
-                       wrapper.getHiddenMembers().contains(InterpreterUtil.makeUniqueKey(mt.getName(), mt.getDescriptor()));
+                       wrapper.getHiddenMembers().contains(InterpreterUtil.makeUniqueKey(mt.getName(), mt.getDescriptor())) ||
+                       components != null && DecompilerContext.getOption(IFernflowerPreferences.COMPACT_RECORDS_OUTPUT);
         if (hide) continue;
-
-        if (components != null) {
-          continue;
-        }
 
         int position = buffer.length();
         int storedLine = startLine;
