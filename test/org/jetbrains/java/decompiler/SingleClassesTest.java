@@ -12,15 +12,18 @@ import org.junit.rules.Timeout;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jetbrains.java.decompiler.DecompilerTestFixture.assertFilesEqual;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SingleClassesTest {
@@ -270,12 +273,26 @@ public class SingleClassesTest {
 
     decompiler.decompileContext();
 
+    /*System.err.println(fixture.getTargetDir().toString());
+    System.err.println(classFile.getFileName().toString().replace(".class", ".java"));
+    System.err.println(fixture.getTestDataDir().toString());
+    System.err.println("results/" + classFile.getFileName().toString().replace(".class", ".dec"));*/
+
     var decompiledFile = fixture.getTargetDir().resolve(classFile.getFileName().toString().replace(".class", ".java"));
     assertThat(decompiledFile).isRegularFile();
     assertTrue(Files.isRegularFile(decompiledFile));
     var referenceFile = fixture.getTestDataDir().resolve("results/" + classFile.getFileName().toString().replace(".class", ".dec"));
     assertThat(referenceFile).isRegularFile();
-    assertFilesEqual(referenceFile, decompiledFile);
+    //assertFilesEqual(referenceFile, decompiledFile);
+    String refStr = null;
+    String decStr = null;
+    try {
+      refStr = Files.readString(referenceFile, StandardCharsets.UTF_8);
+      decStr = Files.readString(decompiledFile, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    assertEquals(refStr, decStr);
   }
 
   static List<Path> collectClasses(Path classFile) {

@@ -227,6 +227,10 @@ public class ClassWriter {
                        wrapper.getHiddenMembers().contains(InterpreterUtil.makeUniqueKey(mt.getName(), mt.getDescriptor()));
         if (hide) continue;
 
+        if (components != null) {
+          continue;
+        }
+
         int position = buffer.length();
         int storedLine = startLine;
         if (hasContent) {
