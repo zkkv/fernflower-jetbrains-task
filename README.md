@@ -1,3 +1,17 @@
+# JetBrains Internship Assignment - Solution Summary
+
+There is already an existing method called `isSyntheticRecordMethod` in the `ClassWriter` class. It returns `true` if the method to be decompiled is one of `equals`, `hashCode` or `toString` that Java generates for records automatically. Without any changes from my side, these methods are not shown in the FernFlower output. I decided to implement my solution in this method as well. 
+
+First, I access all fields an put them in a list. Preserving the order is important to check the constructor later on. 
+
+If the method is a constructor (name `<init>`), we need to build a string containing zero or more assignments in the form `this.x = x;` for each field `x`. I then simply make sure that the built string indeed matches the contents of the method.
+
+If the method is named the same as the variable, e.g. `x()`, then I check that it's contents is `return this.x;`, i.e. it's a simple accessor method.
+
+For the bonus part, I added a new constant called `COMPACT_RECORDS_OUTPUT` and a CLI option `-cro`. By default it's on, so the output is without the canonical constructor and accessor methods. If it's off, it works exactly as before my changes.
+
+Finally, I added a single test called `TestRecordPartial` which has another constructor explicitly written in the record. My code successfully preserves that constructor when `cro=1`. I found other existing tests sufficient for testing my code. I only had remove respective methods from the expected output files.
+
 ### About Fernflower
 
 Fernflower is the first actually working analytical decompiler for Java and 
@@ -61,6 +75,7 @@ The rest of options can be left as they are: they are aimed at professional reve
 - mpm (0): maximum allowed processing time per decompiled method, in seconds. 0 means no upper limit
 - ren (0): rename ambiguous (resp. obfuscated) classes and class elements
 - urc (-): full name of a user-supplied class implementing IIdentifierRenamer interface. It is used to determine which class identifiers
+  
            should be renamed and provides new identifier names (see "Renaming identifiers")
 - inn (1): check for IntelliJ IDEA-specific @NotNull annotation and remove inserted code if found
 - lac (0): decompile lambda expressions to anonymous classes
@@ -77,11 +92,12 @@ code leads to a great number of conflicts. Therefore it is advisable to let the 
 ensuring uniqueness of each identifier.
 
 Option 'ren' (i.e. -ren=1) activates renaming functionality. Default renaming strategy goes as follows:
+
 - rename an element if its name is a reserved word or is shorter than 3 characters
 - new names are built according to a simple pattern: (class|method|field)_\<consecutive unique number>  
-You can overwrite this rules by providing your own implementation of the 4 key methods invoked by the decompiler while renaming. Simply 
-pass a class that implements org.jetbrains.java.decompiler.main.extern.IIdentifierRenamer in the option 'urc'
-(e.g. -urc=com.example.MyRenamer) to Fernflower. The class must be available on the application classpath.
+  You can overwrite this rules by providing your own implementation of the 4 key methods invoked by the decompiler while renaming. Simply 
+  pass a class that implements org.jetbrains.java.decompiler.main.extern.IIdentifierRenamer in the option 'urc'
+  (e.g. -urc=com.example.MyRenamer) to Fernflower. The class must be available on the application classpath.
 
 The meaning of each method should be clear from naming: toBeRenamed determine whether the element will be renamed, while the other three
 provide new names for classes, methods and fields respectively.  
