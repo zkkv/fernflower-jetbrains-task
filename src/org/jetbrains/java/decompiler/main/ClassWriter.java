@@ -284,6 +284,26 @@ public class ClassWriter {
   private static boolean isSyntheticRecordMethod(StructClass cl, StructMethod mt, TextBuffer code) {
     if (cl.getRecordComponents() != null) {
       String name = mt.getName(), descriptor = mt.getDescriptor();
+
+      // Handle canonical constructor and default accessor methods.
+      if (DecompilerContext.getOption(IFernflowerPreferences.COMPACT_RECORDS_OUTPUT)) {
+        List<String> fieldNames = cl.getFields().stream().map(StructField::getName).toList();
+
+        if (name.equals("<init>")) {
+          String str = code.toString().replaceAll("\\s+","");
+          StringBuilder sb = new StringBuilder();
+          for (String field : fieldNames) {
+            sb.append("this.").append(field).append("=").append(field).append(";");
+          }
+          return str.contentEquals(sb);
+        }
+
+        if (fieldNames.contains(name)) {
+          String str = code.toString().trim();
+          return str.equals("return this." + name + ";");
+        }
+      }
+
       if (name.equals("equals") && descriptor.equals("(Ljava/lang/Object;)Z") ||
           name.equals("hashCode") && descriptor.equals("()I") ||
           name.equals("toString") && descriptor.equals("()Ljava/lang/String;")) {
